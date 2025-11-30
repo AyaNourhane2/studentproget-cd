@@ -7,10 +7,6 @@ import java.util.Optional;
 
 @Repository
 public interface UniversityRepository extends JpaRepository<University, Long> {
-    
-    // Trouver une université par son nom
     Optional<University> findByName(String name);
-    
-    // Vérifier si une université existe par nom
     boolean existsByName(String name);
 }

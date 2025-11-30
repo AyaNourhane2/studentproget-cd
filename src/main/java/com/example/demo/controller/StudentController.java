@@ -24,25 +24,19 @@ public class StudentController {
     @GetMapping("/{id}")
     public ResponseEntity<Student> getStudentById(@PathVariable Long id) {
         Optional<Student> student = studentService.getStudentById(id);
-        return student.map(ResponseEntity::ok)
-                     .orElse(ResponseEntity.notFound().build());
+        return student.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
     
     @PostMapping
     public ResponseEntity<?> createStudent(@RequestBody Student student) {
         try {
-            // Vérifier si l'email existe déjà
             if (studentService.emailExists(student.getEmail())) {
-                return ResponseEntity.badRequest()
-                    .body("{\"error\": \"Email already exists: " + student.getEmail() + "\"}");
+                return ResponseEntity.badRequest().body("{\"error\": \"Email already exists: " + student.getEmail() + "\"}");
             }
-            
             Student createdStudent = studentService.createStudent(student);
             return ResponseEntity.ok(createdStudent);
-            
         } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                .body("{\"error\": \"Error creating student: " + e.getMessage() + "\"}");
+            return ResponseEntity.badRequest().body("{\"error\": \"Error creating student: " + e.getMessage() + "\"}");
         }
     }
     
@@ -56,8 +50,7 @@ public class StudentController {
                 return ResponseEntity.notFound().build();
             }
         } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                .body("{\"error\": \"Error updating student: " + e.getMessage() + "\"}");
+            return ResponseEntity.badRequest().body("{\"error\": \"Error updating student: " + e.getMessage() + "\"}");
         }
     }
     
@@ -89,7 +82,6 @@ public class StudentController {
     @GetMapping("/email/{email}")
     public ResponseEntity<Student> getStudentByEmail(@PathVariable String email) {
         Optional<Student> student = studentService.getStudentByEmail(email);
-        return student.map(ResponseEntity::ok)
-                     .orElse(ResponseEntity.notFound().build());
+        return student.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 }

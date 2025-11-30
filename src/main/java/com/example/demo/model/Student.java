@@ -21,7 +21,6 @@ public class Student {
     @Column(unique = true, nullable = false)
     private String email;
     
-    // 🔥 CORRECTION : FetchType.EAGER pour charger l'université automatiquement
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "university_id")
     @JsonIgnoreProperties({"students"})
@@ -38,13 +37,6 @@ public class Student {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-    }
-    
-    public Student(String firstName, String lastName, String email, University university) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.university = university;
     }
     
     // Getters et Setters
@@ -70,20 +62,6 @@ public class Student {
     public void updateUniversityIdFromUniversity() {
         if (this.university != null) {
             this.universityId = this.university.getId();
-        } else {
-            this.universityId = null;
         }
-    }
-    
-    @Override
-    public String toString() {
-        return "Student{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", university=" + (university != null ? university.getName() : "null") +
-                ", universityId=" + universityId +
-                '}';
     }
 }

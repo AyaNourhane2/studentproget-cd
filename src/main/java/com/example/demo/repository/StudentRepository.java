@@ -35,6 +35,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     // Vérifier si l'email existe
     boolean existsByEmail(String email);
     
-    // Trouver les étudiants par ID d'université
-    List<Student> findByUniversityId(Long universityId);
+    // Recherche par ID d'université avec @Query
+    @Query("SELECT s FROM Student s WHERE s.university.id = :universityId")
+    List<Student> findByUniversityId(@Param("universityId") Long universityId);
 }

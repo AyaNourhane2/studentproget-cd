@@ -24,8 +24,7 @@ public class UniversityController {
     @GetMapping("/{id}")
     public ResponseEntity<University> getUniversityById(@PathVariable Long id) {
         Optional<University> university = universityService.getUniversityById(id);
-        return university.map(ResponseEntity::ok)
-                        .orElse(ResponseEntity.notFound().build());
+        return university.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
     
     @PostMapping
@@ -48,7 +47,6 @@ public class UniversityController {
     @GetMapping("/search")
     public ResponseEntity<University> getUniversityByName(@RequestParam String name) {
         Optional<University> university = universityService.getUniversityByName(name);
-        return university.map(ResponseEntity::ok)
-                        .orElse(ResponseEntity.notFound().build());
+        return university.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 }

@@ -32,13 +32,6 @@ public class University {
         this.location = location;
     }
     
-    public University(String name, String location, Integer establishedYear, String description) {
-        this.name = name;
-        this.location = location;
-        this.establishedYear = establishedYear;
-        this.description = description;
-    }
-    
     // Getters et Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -57,9 +50,4 @@ public class University {
     
     public List<Student> getStudents() { return students; }
     public void setStudents(List<Student> students) { this.students = students; }
-    
-    @Override
-    public String toString() {
-        return "University{id=" + id + ", name='" + name + "', location='" + location + "'}";
-    }
 }
