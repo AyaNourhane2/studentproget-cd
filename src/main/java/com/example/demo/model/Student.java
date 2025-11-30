@@ -21,19 +21,18 @@ public class Student {
     @Column(unique = true, nullable = false)
     private String email;
     
+    // 🔥 CORRECTION : FetchType.EAGER pour charger l'université automatiquement
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "university_id")
     @JsonIgnoreProperties({"students"})
     private University university;
     
-    // NOUVEAU: Champ transient pour recevoir universityId depuis le JSON
     @Transient
     @JsonProperty("universityId")
     private Long universityId;
     
     // Constructeurs
     public Student() {
-        // Constructeur par défaut requis par JPA
     }
     
     public Student(String firstName, String lastName, String email) {
@@ -90,7 +89,6 @@ public class Student {
         this.university = university;
     }
     
-    // NOUVEAU: Getter et Setter pour universityId
     public Long getUniversityId() {
         return universityId;
     }
@@ -99,17 +97,13 @@ public class Student {
         this.universityId = universityId;
     }
     
-    // Méthode utilitaire pour gérer l'université après désérialisation
-    @PostLoad
-    @PostPersist
-    @PostUpdate
+    // Méthode pour synchroniser universityId avec university
     public void updateUniversityIdFromUniversity() {
         if (this.university != null) {
             this.universityId = this.university.getId();
         }
     }
     
-    // Méthode toString()
     @Override
     public String toString() {
         return "Student{" +

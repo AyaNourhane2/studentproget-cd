@@ -37,21 +37,32 @@ public class StudentService {
             throw new RuntimeException("Email already exists: " + student.getEmail());
         }
         
-        // Gérer la relation avec l'université via universityId
-        if (student.getUniversityId() != null) {
+        // 🔥 CORRECTION : Gérer l'université via universityId
+        University university = null;
+        if (student.getUniversityId() != null && student.getUniversityId() > 0) {
             Optional<University> universityOpt = universityRepository.findById(student.getUniversityId());
             if (universityOpt.isPresent()) {
-                student.setUniversity(universityOpt.get());
+                university = universityOpt.get();
+                student.setUniversity(university);
             } else {
                 throw new RuntimeException("University not found with id: " + student.getUniversityId());
             }
         } else {
-            // Si pas d'université, mettre à null
             student.setUniversity(null);
         }
         
+        // Sauvegarder l'étudiant
         Student savedStudent = studentRepository.save(student);
-        savedStudent.updateUniversityIdFromUniversity();
+        
+        // 🔥 CORRECTION CRITIQUE : Recharger l'étudiant pour avoir l'université
+        Optional<Student> reloadedStudentOpt = studentRepository.findById(savedStudent.getId());
+        if (reloadedStudentOpt.isPresent()) {
+            savedStudent = reloadedStudentOpt.get();
+        }
+        
+        // S'assurer que universityId est défini dans la réponse
+        savedStudent.setUniversityId(student.getUniversityId());
+        
         return savedStudent;
     }
     
@@ -70,8 +81,8 @@ public class StudentService {
             student.setLastName(studentDetails.getLastName());
             student.setEmail(studentDetails.getEmail());
             
-            // Gérer la mise à jour de l'université via universityId
-            if (studentDetails.getUniversityId() != null) {
+            // 🔥 CORRECTION : Gérer la mise à jour de l'université
+            if (studentDetails.getUniversityId() != null && studentDetails.getUniversityId() > 0) {
                 Optional<University> universityOpt = universityRepository.findById(studentDetails.getUniversityId());
                 if (universityOpt.isPresent()) {
                     student.setUniversity(universityOpt.get());
@@ -83,7 +94,14 @@ public class StudentService {
             }
             
             Student updatedStudent = studentRepository.save(student);
-            updatedStudent.updateUniversityIdFromUniversity();
+            
+            // Recharger pour avoir l'université
+            Optional<Student> reloadedStudentOpt = studentRepository.findById(updatedStudent.getId());
+            if (reloadedStudentOpt.isPresent()) {
+                updatedStudent = reloadedStudentOpt.get();
+            }
+            
+            updatedStudent.setUniversityId(studentDetails.getUniversityId());
             return updatedStudent;
         }
         return null;
