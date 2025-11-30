@@ -11,17 +11,17 @@ import java.util.Optional;
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
     
-    // Search by name
+    // Recherche par nom
     List<Student> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(String firstName, String lastName);
     
-    // Search by email
+    // Recherche par email
     Optional<Student> findByEmail(String email);
     
-    // Search by university name
+    // Recherche par nom d'université
     @Query("SELECT s FROM Student s JOIN s.university u WHERE u.name LIKE %:universityName%")
     List<Student> findByUniversityNameContaining(@Param("universityName") String universityName);
     
-    // Search by multiple criteria
+    // Recherche par critères multiples
     @Query("SELECT s FROM Student s WHERE " +
            "(:firstName IS NULL OR s.firstName LIKE %:firstName%) AND " +
            "(:lastName IS NULL OR s.lastName LIKE %:lastName%) AND " +
@@ -32,9 +32,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
                                 @Param("email") String email,
                                 @Param("universityName") String universityName);
     
-    // Check if email exists
+    // Vérifier si l'email existe
     boolean existsByEmail(String email);
     
-    // Find students by university ID
+    // Trouver les étudiants par ID d'université
     List<Student> findByUniversityId(Long universityId);
 }

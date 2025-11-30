@@ -32,8 +32,7 @@ public class Student {
     private Long universityId;
     
     // Constructeurs
-    public Student() {
-    }
+    public Student() {}
     
     public Student(String firstName, String lastName, String email) {
         this.firstName = firstName;
@@ -49,58 +48,30 @@ public class Student {
     }
     
     // Getters et Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
     
-    public String getFirstName() {
-        return firstName;
-    }
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
     
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
     
-    public String getLastName() {
-        return lastName;
-    }
+    public University getUniversity() { return university; }
+    public void setUniversity(University university) { this.university = university; }
     
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-    
-    public String getEmail() {
-        return email;
-    }
-    
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    
-    public University getUniversity() {
-        return university;
-    }
-    
-    public void setUniversity(University university) {
-        this.university = university;
-    }
-    
-    public Long getUniversityId() {
-        return universityId;
-    }
-    
-    public void setUniversityId(Long universityId) {
-        this.universityId = universityId;
-    }
+    public Long getUniversityId() { return universityId; }
+    public void setUniversityId(Long universityId) { this.universityId = universityId; }
     
     // Méthode pour synchroniser universityId avec university
     public void updateUniversityIdFromUniversity() {
         if (this.university != null) {
             this.universityId = this.university.getId();
+        } else {
+            this.universityId = null;
         }
     }
     

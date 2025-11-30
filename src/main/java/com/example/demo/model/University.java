@@ -1,6 +1,5 @@
 package com.example.demo.model;
 
-
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +7,7 @@ import java.util.List;
 @Entity
 @Table(name = "universities")
 public class University {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,10 +17,14 @@ public class University {
     
     private String location;
     
+    private Integer establishedYear;
+    
+    private String description;
+    
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Student> students = new ArrayList<>();
     
-    // Constructors
+    // Constructeurs
     public University() {}
     
     public University(String name, String location) {
@@ -28,7 +32,14 @@ public class University {
         this.location = location;
     }
     
-    // Getters and Setters
+    public University(String name, String location, Integer establishedYear, String description) {
+        this.name = name;
+        this.location = location;
+        this.establishedYear = establishedYear;
+        this.description = description;
+    }
+    
+    // Getters et Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -37,6 +48,12 @@ public class University {
     
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
+    
+    public Integer getEstablishedYear() { return establishedYear; }
+    public void setEstablishedYear(Integer establishedYear) { this.establishedYear = establishedYear; }
+    
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
     
     public List<Student> getStudents() { return students; }
     public void setStudents(List<Student> students) { this.students = students; }
