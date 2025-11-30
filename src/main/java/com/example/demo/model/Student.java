@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "students")
@@ -24,6 +25,11 @@ public class Student {
     @JoinColumn(name = "university_id")
     @JsonIgnoreProperties({"students"})
     private University university;
+    
+    // NOUVEAU: Champ transient pour recevoir universityId depuis le JSON
+    @Transient
+    @JsonProperty("universityId")
+    private Long universityId;
     
     // Constructeurs
     public Student() {
@@ -84,6 +90,25 @@ public class Student {
         this.university = university;
     }
     
+    // NOUVEAU: Getter et Setter pour universityId
+    public Long getUniversityId() {
+        return universityId;
+    }
+    
+    public void setUniversityId(Long universityId) {
+        this.universityId = universityId;
+    }
+    
+    // Méthode utilitaire pour gérer l'université après désérialisation
+    @PostLoad
+    @PostPersist
+    @PostUpdate
+    public void updateUniversityIdFromUniversity() {
+        if (this.university != null) {
+            this.universityId = this.university.getId();
+        }
+    }
+    
     // Méthode toString()
     @Override
     public String toString() {
@@ -93,22 +118,7 @@ public class Student {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", university=" + (university != null ? university.getName() : "null") +
+                ", universityId=" + universityId +
                 '}';
-    }
-    
-    // Méthodes equals() et hashCode() (optionnel mais recommandé)
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        
-        Student student = (Student) o;
-        
-        return id != null ? id.equals(student.id) : student.id == null;
-    }
-    
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
     }
 }

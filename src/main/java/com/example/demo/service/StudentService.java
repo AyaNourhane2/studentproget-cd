@@ -19,11 +19,16 @@ public class StudentService {
     private UniversityRepository universityRepository;
     
     public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+        List<Student> students = studentRepository.findAll();
+        // Mettre à jour universityId pour chaque étudiant
+        students.forEach(Student::updateUniversityIdFromUniversity);
+        return students;
     }
     
     public Optional<Student> getStudentById(Long id) {
-        return studentRepository.findById(id);
+        Optional<Student> studentOpt = studentRepository.findById(id);
+        studentOpt.ifPresent(Student::updateUniversityIdFromUniversity);
+        return studentOpt;
     }
     
     public Student createStudent(Student student) {
@@ -32,20 +37,22 @@ public class StudentService {
             throw new RuntimeException("Email already exists: " + student.getEmail());
         }
         
-        // Gérer la relation avec l'université
-        if (student.getUniversity() != null && student.getUniversity().getId() != null) {
-            Optional<University> universityOpt = universityRepository.findById(student.getUniversity().getId());
+        // Gérer la relation avec l'université via universityId
+        if (student.getUniversityId() != null) {
+            Optional<University> universityOpt = universityRepository.findById(student.getUniversityId());
             if (universityOpt.isPresent()) {
                 student.setUniversity(universityOpt.get());
             } else {
-                throw new RuntimeException("University not found with id: " + student.getUniversity().getId());
+                throw new RuntimeException("University not found with id: " + student.getUniversityId());
             }
         } else {
             // Si pas d'université, mettre à null
             student.setUniversity(null);
         }
         
-        return studentRepository.save(student);
+        Student savedStudent = studentRepository.save(student);
+        savedStudent.updateUniversityIdFromUniversity();
+        return savedStudent;
     }
     
     public Student updateStudent(Long id, Student studentDetails) {
@@ -63,19 +70,21 @@ public class StudentService {
             student.setLastName(studentDetails.getLastName());
             student.setEmail(studentDetails.getEmail());
             
-            // Gérer la mise à jour de l'université
-            if (studentDetails.getUniversity() != null && studentDetails.getUniversity().getId() != null) {
-                Optional<University> universityOpt = universityRepository.findById(studentDetails.getUniversity().getId());
+            // Gérer la mise à jour de l'université via universityId
+            if (studentDetails.getUniversityId() != null) {
+                Optional<University> universityOpt = universityRepository.findById(studentDetails.getUniversityId());
                 if (universityOpt.isPresent()) {
                     student.setUniversity(universityOpt.get());
                 } else {
-                    throw new RuntimeException("University not found with id: " + studentDetails.getUniversity().getId());
+                    throw new RuntimeException("University not found with id: " + studentDetails.getUniversityId());
                 }
             } else {
                 student.setUniversity(null);
             }
             
-            return studentRepository.save(student);
+            Student updatedStudent = studentRepository.save(student);
+            updatedStudent.updateUniversityIdFromUniversity();
+            return updatedStudent;
         }
         return null;
     }
@@ -89,15 +98,21 @@ public class StudentService {
     }
     
     public List<Student> searchStudents(String firstName, String lastName, String email, String universityName) {
-        return studentRepository.searchStudents(firstName, lastName, email, universityName);
+        List<Student> students = studentRepository.searchStudents(firstName, lastName, email, universityName);
+        students.forEach(Student::updateUniversityIdFromUniversity);
+        return students;
     }
     
     public List<Student> findByUniversityName(String universityName) {
-        return studentRepository.findByUniversityNameContaining(universityName);
+        List<Student> students = studentRepository.findByUniversityNameContaining(universityName);
+        students.forEach(Student::updateUniversityIdFromUniversity);
+        return students;
     }
     
     public List<Student> findByUniversityId(Long universityId) {
-        return studentRepository.findByUniversityId(universityId);
+        List<Student> students = studentRepository.findByUniversityId(universityId);
+        students.forEach(Student::updateUniversityIdFromUniversity);
+        return students;
     }
     
     public boolean emailExists(String email) {
@@ -105,6 +120,8 @@ public class StudentService {
     }
     
     public Optional<Student> getStudentByEmail(String email) {
-        return studentRepository.findByEmail(email);
+        Optional<Student> studentOpt = studentRepository.findByEmail(email);
+        studentOpt.ifPresent(Student::updateUniversityIdFromUniversity);
+        return studentOpt;
     }
 }
